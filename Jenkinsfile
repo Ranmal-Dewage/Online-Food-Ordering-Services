@@ -7,10 +7,6 @@ pipeline{
     stage("build") {
 
       setps {
-        sh "pwd"
-        dir("product") {
-          sh "pwd"
-        }
         echo "building the application"      
       }
 
@@ -19,10 +15,6 @@ pipeline{
     stage("test") {
 
        setps {
-        sh "pwd"
-        dir("product") {
-          sh "pwd"
-        }
          echo "testing the application"        
       }
 
@@ -31,10 +23,6 @@ pipeline{
     stage("deploy") {
 
        setps {
-        sh "pwd"
-        dir("product") {
-          sh "pwd"
-        }
          echo "deploying the application"        
       }
 
