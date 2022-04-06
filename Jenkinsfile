@@ -32,7 +32,7 @@ pipeline {
         echo "executing sonarqube analysis"
         dir("product") {
           withSonarQubeEnv("sonarqube-8.9.8") {
-            sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000"
+            sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -Dsonar.coverage.exclusions=**/controller/*.java,**/dto/*.java,**/exception/*.java,**/model/*.java,**/repository/*.java,**/product/*.java"
           }
         }
       }
