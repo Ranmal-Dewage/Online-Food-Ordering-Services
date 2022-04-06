@@ -1,5 +1,6 @@
 package com.ranmal.product.service;
 
+import com.ranmal.product.exception.NotFoundException;
 import com.ranmal.product.model.Product;
 import com.ranmal.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,24 @@ public class ProductService {
     }
 
     public List<Product> findProductsForSearch(String value) {
-        return this.productRepository.findProductsByProductNameOrAndProductCategory(value);
+        if(!value.matches("^[a-zA-Z0-9]*$")){
+            throw new IllegalArgumentException("Search value can only contain Alphanumeric Characters Only");
+        }
+
+        List<Product> retrievedProducts = this.productRepository.findProductsByProductNameOrAndProductCategory(value);
+        if (retrievedProducts.size() == 0) {
+            throw new NotFoundException("No Products Found for Search Value : " + value);
+        } else {
+            return retrievedProducts;
+        }
     }
 
-    public List<Product> findProductsByCategory(String category){
-        return this.productRepository.findProductsByProductCategory(category);
+    public List<Product> findProductsByCategory(String category) {
+        List<Product> retrievedProducts = this.productRepository.findProductsByProductCategory(category);
+        if (retrievedProducts.size() == 0) {
+            throw new NotFoundException("No Products Found for the Category : " + category);
+        } else {
+            return retrievedProducts;
+        }
     }
 }
