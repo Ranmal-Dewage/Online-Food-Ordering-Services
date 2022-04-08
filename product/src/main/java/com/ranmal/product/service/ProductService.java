@@ -27,7 +27,7 @@ public class ProductService {
     }
 
     public List<Product> findProductsForSearch(String value) {
-        if(!value.matches("^[a-zA-Z0-9]*$")){
+        if (!value.matches("^[a-zA-Z0-9]*$")) {
             throw new IllegalArgumentException("Search value can only contain Alphanumeric Characters Only");
         }
 
