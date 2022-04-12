@@ -7,21 +7,30 @@ pipeline {
 
   stages {
 
+    stage("test") {
+
+      steps {
+        echo "testing the application"
+        dir("product") {
+          sh "mvn clean test"
+        }
+        dir("user") {
+          sh "mvn clean test"
+        }    
+      }
+
+    }
+
     stage("build") {
 
       steps {
         echo "building the application"
         dir("product") {
           sh "mvn clean package"
+        }
+        dir("user") {
+          sh "mvn clean package"
         }      
-      }
-
-    }
-
-    stage("test") {
-
-      steps {
-        echo "testing the application"
       }
 
     }
@@ -33,6 +42,11 @@ pipeline {
         dir("product") {
           withSonarQubeEnv("sonarqube-8.9.8") {
             sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -Dsonar.coverage.exclusions=**/controller/*.java,**/dto/*.java,**/exception/*.java,**/model/*.java,**/repository/*.java,**/product/*.java"
+          }
+        }
+        dir("user") {
+          withSonarQubeEnv("sonarqube-8.9.8") {
+            sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -Dsonar.coverage.exclusions=**/controller/*.java,**/dto/*.java,**/exception/*.java,**/model/*.java,**/repository/*.java,**/user/*.java"
           }
         }
       }
