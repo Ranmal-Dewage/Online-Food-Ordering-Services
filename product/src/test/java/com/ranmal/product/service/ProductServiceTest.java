@@ -191,4 +191,29 @@ class ProductServiceTest {
                 hasMessageContaining("No Products Found for the Category : " + categoryTestData);
     }
 
+    @Test
+    void checkFindProductsByCategoryIllegalArgumentException() {
+        //given
+        String categoryTestData = "meat@!";
+
+        //when
+        //then
+        assertThatThrownBy(() -> underTestProductService.findProductsByCategory(categoryTestData)).
+                isInstanceOf(IllegalArgumentException.class).
+                hasMessageContaining("Category value can only contain Alphabetic Characters Only");
+    }
+
+    @Test
+    void checkFindAllProductsNotFound() {
+        //given
+        List<Product> expected = List.of();
+        given(productRepositoryMock.findAll()).willReturn(expected);
+
+        //when
+        //then
+        assertThatThrownBy(() -> underTestProductService.findAllProducts()).
+                isInstanceOf(NotFoundException.class).
+                hasMessageContaining("No Products Available in the System");
+    }
+
 }
