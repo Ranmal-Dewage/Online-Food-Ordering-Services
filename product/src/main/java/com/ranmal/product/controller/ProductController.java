@@ -21,7 +21,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(path = "products", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "api/v1/products", produces = APPLICATION_JSON_VALUE)
 public class ProductController {
 
     private final ProductService productService;
@@ -61,7 +61,7 @@ public class ProductController {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
-            @ApiResponse(responseCode = "400", description = "Bad Request for Products",
+            @ApiResponse(responseCode = "400", description = "Bad Request for Product Search",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
@@ -84,6 +84,11 @@ public class ProductController {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
+            @ApiResponse(responseCode = "400", description = "Bad Request for Product Category",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
     })
     @GetMapping(path = "/{category}")
     public List<Product> getProductsByCategory(@PathVariable(name = "category") String category) {
@@ -93,6 +98,11 @@ public class ProductController {
     @Operation(summary = "Create Products", description = "Create a Product and return the created product with ID", tags = "Products")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Product Created"),
+            @ApiResponse(responseCode = "400", description = "Bad Request for Product Creation",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
     })
     @PostMapping
     public ResponseEntity<Product> addNewProduct(@Valid @RequestBody() ProductDTO productDTO) {

@@ -2,6 +2,7 @@ package com.ranmal.product.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -21,6 +22,18 @@ public class ApiExceptionHandler {
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(illegalArgumentException.getMessage(),
                 badRequest.getReasonPhrase(), badRequest.value());
+        return new ResponseEntity<>(apiExceptionResponse, badRequest);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiExceptionResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException methodArgumentNotValidException) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        String errorMessage = methodArgumentNotValidException.getBindingResult().getAllErrors().get(0).toString();
+        ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(
+                errorMessage.substring(errorMessage.lastIndexOf("[") + 1, errorMessage.lastIndexOf("]")),
+                badRequest.getReasonPhrase(),
+                badRequest.value());
         return new ResponseEntity<>(apiExceptionResponse, badRequest);
     }
 
