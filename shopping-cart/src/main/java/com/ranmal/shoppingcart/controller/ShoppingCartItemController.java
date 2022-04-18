@@ -31,7 +31,7 @@ public class ShoppingCartItemController {
         this.shoppingCartItemService = shoppingCartItemService;
     }
 
-    @Operation(summary = "Create New Shopping Cart Item", description = "Create a a new Shopping Cart Item and return the created basic shopping cart item details with ID", tags = "shopping cart")
+    @Operation(summary = "Create New Shopping Cart Item", description = "Create a a new Shopping Cart Item and return the created basic shopping cart item details with ID", tags = "Shopping Cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Shopping Cart Item Created"),
             @ApiResponse(responseCode = "400", description = "Bad Request for Shopping Cart Item Creation",
@@ -50,7 +50,7 @@ public class ShoppingCartItemController {
         return new ResponseEntity<>(this.shoppingCartItemService.newShoppingCartItem(newShoppingCartItem), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Delete Shopping Cart Item", description = "Delete the Shopping Cart Items and send the deleted keys as the response", tags = "shopping cart")
+    @Operation(summary = "Delete Shopping Cart Item", description = "Delete the Shopping Cart Items and send the deleted keys as the response", tags = "Shopping Cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Shopping Cart Item Deleted"),
             @ApiResponse(responseCode = "404", description = "Shopping Cart Item Not Found for Deletion",
