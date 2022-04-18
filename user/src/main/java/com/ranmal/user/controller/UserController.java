@@ -22,7 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping(path = "/users", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "api/v1/users", produces = APPLICATION_JSON_VALUE)
 public class UserController {
 
     private final UserService userService;
@@ -40,7 +40,7 @@ public class UserController {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
-            @ApiResponse(responseCode = "400", description = "Bad Request for User",
+            @ApiResponse(responseCode = "400", description = "Bad Request for User Creation",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
@@ -59,15 +59,20 @@ public class UserController {
         return new ResponseEntity<>(this.userService.addNewUser(newUser), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Login Users", description = "Authenticate the User and return basic user details with ID", tags = "Users")
+    @Operation(summary = "Authenticate Users", description = "Authenticate the User and return basic user details with ID", tags = "Users")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Authenticate User"),
+            @ApiResponse(responseCode = "200", description = "User Authenticated"),
             @ApiResponse(responseCode = "404", description = "User Not Found",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
             @ApiResponse(responseCode = "401", description = "User Not Authorized",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+            @ApiResponse(responseCode = "400", description = "Bad Request for User Authentication",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))

@@ -17,15 +17,15 @@ import javax.validation.constraints.Pattern;
 public class UserRequestDTO {
 
     @NotNull(message = "First Name can not be Null")
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "First Name should contain Alphabetic Characters only")
+    @Pattern(regexp = "^[a-zA-Z| ]*$", message = "First Name should contain Alphabetic Characters only")
     private String firstName;
 
     @NotNull(message = "Last Name can not be Null")
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "Last Name should contain Alphabetic Characters only")
+    @Pattern(regexp = "^[a-zA-Z| ]*$", message = "Last Name should contain Alphabetic Characters only")
     private String lastName;
 
     @NotNull(message = "Username can not be Null")
-    @Pattern(regexp = "^[a-zA-Z0-9|_]*$", message = "Username should contain Alpha-Numeric Characters amd Underscore Character only")
+    @Pattern(regexp = "^[a-zA-Z\\d|_]*$", message = "Username should contain Alpha-Numeric Characters and Underscore Character only")
     private String userName;
 
     @NotNull(message = "Email can not be Null")

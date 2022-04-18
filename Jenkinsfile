@@ -16,7 +16,10 @@ pipeline {
         }
         dir("user") {
           sh "mvn clean test"
-        }    
+        }
+        dir("shopping-cart") {
+          sh "mvn clean test"
+        }   
       }
 
     }
@@ -30,7 +33,10 @@ pipeline {
         }
         dir("user") {
           sh "mvn clean package"
-        }      
+        }
+        dir("shopping-cart") {
+          sh "mvn clean package"
+        }       
       }
 
     }
@@ -47,6 +53,11 @@ pipeline {
         dir("user") {
           withSonarQubeEnv("sonarqube-8.9.8") {
             sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -Dsonar.coverage.exclusions=**/controller/*.java,**/dto/*.java,**/exception/*.java,**/model/*.java,**/repository/*.java,**/user/*.java"
+          }
+        }
+        dir("shopping-cart") {
+          withSonarQubeEnv("sonarqube-8.9.8") {
+            sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube:9000 -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco/jacoco.xml -Dsonar.coverage.exclusions=**/controller/*.java,**/dto/*.java,**/exception/*.java,**/model/*.java,**/repository/*.java,**/shoppingcart/*.java"
           }
         }
       }

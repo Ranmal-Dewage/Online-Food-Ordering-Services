@@ -75,6 +75,7 @@
                         <exclude>**/controller/*.class</exclude>
                         <exclude>**/dto/*.class</exclude>
                         <exclude>**/exception/*.class</exclude>
+                        <exclude>**/repository/*.class</exclude>
                         <exclude>**/model/*.class</exclude>
                         <exclude>**/product/*.class</exclude>
                     </excludes>
