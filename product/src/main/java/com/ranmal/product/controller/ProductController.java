@@ -90,9 +90,9 @@ public class ProductController {
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
     })
-    @GetMapping(path = "/{category}")
-    public List<Product> getProductsByCategory(@PathVariable(name = "category") String category) {
-        return this.productService.findProductsByCategory(category);
+    @GetMapping(path = "categories/{categoryName}")
+    public List<Product> getProductsByCategory(@PathVariable(name = "categoryName") String categoryName) {
+        return this.productService.findProductsByCategory(categoryName);
     }
 
     @Operation(summary = "Create Products", description = "Create a Product and return the created product with ID", tags = "Products")
