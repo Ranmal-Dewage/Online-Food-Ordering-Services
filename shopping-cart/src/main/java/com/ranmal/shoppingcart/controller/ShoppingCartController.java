@@ -4,6 +4,7 @@ import com.ranmal.shoppingcart.dto.ShoppingCartCreateDTO;
 
 import com.ranmal.shoppingcart.dto.ShoppingCartDeleteResponse;
 import com.ranmal.shoppingcart.exception.ApiExceptionResponse;
+import com.ranmal.shoppingcart.exception.NotFoundException;
 import com.ranmal.shoppingcart.model.ShoppingCart;
 import com.ranmal.shoppingcart.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,7 @@ public class ShoppingCartController {
                     }),
     })
     @PostMapping
-    public ResponseEntity<ShoppingCart> createShoppingCart(@Valid @RequestBody ShoppingCartCreateDTO shoppingCartCreateDTO){
+    public ResponseEntity<ShoppingCart> createShoppingCart(@Valid @RequestBody ShoppingCartCreateDTO shoppingCartCreateDTO) {
         ShoppingCart newShoppingCart = ShoppingCart.builder().
                 cartName(shoppingCartCreateDTO.getCartName()).
                 userId(shoppingCartCreateDTO.getUserId()).
@@ -58,9 +60,13 @@ public class ShoppingCartController {
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
     })
-    @DeleteMapping(path="{cartId}")
-    public ShoppingCartDeleteResponse deleteShoppingCart (@PathVariable("cartId") int cartId){
-        return this.shoppingCartService.removeShoppingCart(cartId);
+    @DeleteMapping(path = "{cartId}")
+    public ShoppingCartDeleteResponse deleteShoppingCart(@PathVariable("cartId") int cartId) {
+        try {
+            return this.shoppingCartService.removeShoppingCart(cartId);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException("No resource found for Shopping Cart Entity with Cart Id : " + cartId);
+        }
     }
 
 }

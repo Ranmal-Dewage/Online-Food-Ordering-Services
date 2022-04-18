@@ -2,6 +2,7 @@ package com.ranmal.shoppingcart.controller;
 
 import com.ranmal.shoppingcart.dto.ShoppingCartItemCreateDTO;
 import com.ranmal.shoppingcart.exception.ApiExceptionResponse;
+import com.ranmal.shoppingcart.exception.NotFoundException;
 import com.ranmal.shoppingcart.model.ShoppingCartItem;
 import com.ranmal.shoppingcart.model.ShoppingCartItemKeys;
 import com.ranmal.shoppingcart.service.ShoppingCartItemService;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +43,7 @@ public class ShoppingCartItemController {
                     }),
     })
     @PostMapping
-    public ResponseEntity<ShoppingCartItem> createShoppingCartItem(@Valid @RequestBody ShoppingCartItemCreateDTO shoppingCartItemCreateDTO){
+    public ResponseEntity<ShoppingCartItem> createShoppingCartItem(@Valid @RequestBody ShoppingCartItemCreateDTO shoppingCartItemCreateDTO) {
         ShoppingCartItem newShoppingCartItem = ShoppingCartItem.builder().
                 cartId(shoppingCartItemCreateDTO.getCartId()).
                 productId(shoppingCartItemCreateDTO.getProductId()).
@@ -59,10 +61,14 @@ public class ShoppingCartItemController {
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
     })
-    @DeleteMapping(path="/shopping-carts/{cartId}/products/{productId}")
-    public ShoppingCartItemKeys deleteCartItem(@PathVariable("cartId") int cartId, @PathVariable("productId") int productId){
+    @DeleteMapping(path = "/shopping-carts/{cartId}/products/{productId}")
+    public ShoppingCartItemKeys deleteCartItem(@PathVariable("cartId") int cartId, @PathVariable("productId") int productId) {
         ShoppingCartItemKeys newShoppingCartItemKeys = new ShoppingCartItemKeys(productId, cartId);
-        return this.shoppingCartItemService.removeCartItem(newShoppingCartItemKeys);
+        try {
+            return this.shoppingCartItemService.removeCartItem(newShoppingCartItemKeys);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NotFoundException("No resource found for Shopping Cart Item Entity with Cart Id : " + cartId + " and Product Id : " + productId);
+        }
     }
 
 }

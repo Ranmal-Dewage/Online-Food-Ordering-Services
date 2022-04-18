@@ -22,13 +22,12 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiExceptionResponse, badRequest);
     }
 
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<ApiExceptionResponse> handleEmptyResultDataAccessException(
-            EmptyResultDataAccessException emptyResultDataAccessException) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiExceptionResponse> handleNotFoundException(
+            NotFoundException notFoundException) {
         HttpStatus notFound = HttpStatus.NOT_FOUND;
-        String errorMessage = emptyResultDataAccessException.getMessage();
         ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(
-                "No resource found for " + errorMessage.substring(errorMessage.lastIndexOf(".") + 1, errorMessage.lastIndexOf("exists")),
+                notFoundException.getMessage(),
                 notFound.getReasonPhrase(),
                 notFound.value());
         return new ResponseEntity<>(apiExceptionResponse, notFound);
