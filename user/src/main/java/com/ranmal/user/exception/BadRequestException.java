@@ -3,12 +3,13 @@ package com.ranmal.user.exception;
 import lombok.Getter;
 
 @Getter
-public class NotFoundException extends RuntimeException {
+public class BadRequestException extends RuntimeException{
 
     private final String errorMessage;
 
-    public NotFoundException(String errorMessage) {
+    public BadRequestException(String errorMessage) {
         super(errorMessage);
         this.errorMessage = errorMessage;
     }
+
 }

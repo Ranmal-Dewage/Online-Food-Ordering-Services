@@ -2,8 +2,8 @@ package com.ranmal.user.service;
 
 import com.ranmal.user.dto.UserLoginRequestDTO;
 import com.ranmal.user.dto.UserResponseDTO;
+import com.ranmal.user.exception.BadRequestException;
 import com.ranmal.user.exception.InvalidCredentialsException;
-import com.ranmal.user.exception.NotFoundException;
 import com.ranmal.user.model.User;
 import com.ranmal.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +40,7 @@ class UserServiceTest {
                 address("Colombo, Sri Lanka").
                 hashCredential("abc123").
                 build();
+        given(userRepositoryMock.existsUserByEmail(testUser.getEmail())).willReturn(false);
         given(userRepositoryMock.saveAndFlush(testUser)).willAnswer((invocation) -> {
             User user = invocation.getArgument(0, User.class);
             user.setUserId(1);
@@ -51,6 +52,26 @@ class UserServiceTest {
 
         //then
         assertThat(result).isInstanceOf(UserResponseDTO.class);
+    }
+
+    @Test
+    void checkAddNewUserAlreadyExists() {
+        //given
+        User testUser = User.builder().
+                firstName("Ranmal").
+                lastName("Dewage").
+                userName("RanmalD").
+                email("rand@gmail.com").
+                address("Colombo, Sri Lanka").
+                hashCredential("abc123").
+                build();
+        given(userRepositoryMock.existsUserByEmail(testUser.getEmail())).willReturn(true);
+
+        //when
+        //then
+        assertThatThrownBy(() -> underTestUserService.addNewUser(testUser)).
+                isInstanceOf(BadRequestException.class).
+                hasMessageContaining("Invalid Email Address");
     }
 
     @Test
@@ -76,7 +97,7 @@ class UserServiceTest {
     }
 
     @Test
-    void checkAuthenticateUserNotFound(){
+    void checkAuthenticateUserInvalidCredentialsEmail(){
         //given
         UserLoginRequestDTO testLoginRequest = new UserLoginRequestDTO("rand@gmail.com", "abc123");
         given(userRepositoryMock.findUserByEmail(testLoginRequest.getEmail())).willReturn(null);
@@ -84,12 +105,12 @@ class UserServiceTest {
         //when
         //then
         assertThatThrownBy(() -> underTestUserService.authenticateUser(testLoginRequest)).
-                isInstanceOf(NotFoundException.class).
-                hasMessageContaining("No User Found for Email : " + testLoginRequest.getEmail());
+                isInstanceOf(InvalidCredentialsException.class).
+                hasMessageContaining("Credentials are Not Valid");
     }
 
     @Test
-    void checkAuthenticateUserInvalidCredentials(){
+    void checkAuthenticateUserInvalidCredentialsPassword(){
         //given
         UserLoginRequestDTO testLoginRequest = new UserLoginRequestDTO("rand@gmail.com", "qwe456");
         User testUser = User.builder().

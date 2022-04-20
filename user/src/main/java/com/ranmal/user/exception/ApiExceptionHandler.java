@@ -6,27 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
 @ControllerAdvice
 public class ApiExceptionHandler {
-
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ApiExceptionResponse> handleSQLIntegrityConstraintViolationException(
-            SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException) {
-        HttpStatus conflict = HttpStatus.CONFLICT;
-        ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(sqlIntegrityConstraintViolationException.getMessage(),
-                conflict.getReasonPhrase(), conflict.value());
-        return new ResponseEntity<>(apiExceptionResponse, conflict);
-    }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ApiExceptionResponse> handleNotFoundException(NotFoundException notFoundException) {
-        HttpStatus notFound = HttpStatus.NOT_FOUND;
-        ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(notFoundException.getMessage(),
-                notFound.getReasonPhrase(), notFound.value());
-        return new ResponseEntity<>(apiExceptionResponse, notFound);
-    }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ApiExceptionResponse> handleInvalidCredentialsException(InvalidCredentialsException invalidCredentialsException) {
@@ -46,6 +27,27 @@ public class ApiExceptionHandler {
                 badRequest.getReasonPhrase(),
                 badRequest.value());
         return new ResponseEntity<>(apiExceptionResponse, badRequest);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiExceptionResponse> handleBadRequestException(
+            BadRequestException badRequestException) {
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(
+                badRequestException.getMessage(),
+                badRequest.getReasonPhrase(),
+                badRequest.value());
+        return new ResponseEntity<>(apiExceptionResponse, badRequest);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiExceptionResponse> handleAnyOtherException() {
+        HttpStatus internalServerError = HttpStatus.INTERNAL_SERVER_ERROR;
+        ApiExceptionResponse apiExceptionResponse = new ApiExceptionResponse(
+                "The Server encountered an internal error or misconfiguration and was unable to complete the request",
+                internalServerError.getReasonPhrase(),
+                internalServerError.value());
+        return new ResponseEntity<>(apiExceptionResponse, internalServerError);
     }
 
 }

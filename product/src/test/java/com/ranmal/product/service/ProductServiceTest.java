@@ -14,6 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -204,16 +205,38 @@ class ProductServiceTest {
     }
 
     @Test
-    void checkFindAllProductsNotFound() {
+    void checkFindProductById() {
         //given
-        List<Product> expected = List.of();
-        given(productRepositoryMock.findAll()).willReturn(expected);
+        int testProductId = 1;
+        Optional<Product> expected = Optional.of(new Product(
+                1,
+                "Chicken",
+                "Meat",
+                8.25,
+                1000,
+                "test_url",
+                1));
+        given(productRepositoryMock.findById(testProductId)).willReturn(expected);
+
+        //when
+        Optional<Product> result = underTestProductService.findProductsById(testProductId);
+
+        //then
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void checkFindProductByIdNotFound() {
+        //given
+        int testProductId = 1;
+        Optional<Product> expected = Optional.empty();
+        given(productRepositoryMock.findById(testProductId)).willReturn(expected);
 
         //when
         //then
-        assertThatThrownBy(() -> underTestProductService.findAllProducts()).
+        assertThatThrownBy(() -> underTestProductService.findProductsById(testProductId)).
                 isInstanceOf(NotFoundException.class).
-                hasMessageContaining("No Products Available in the System");
+                hasMessageContaining("Product Not Found for Product Id : " + testProductId);
     }
 
 }

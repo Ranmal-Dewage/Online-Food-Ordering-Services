@@ -48,12 +48,18 @@ public class ShoppingCartController {
                 userId(shoppingCartCreateDTO.getUserId()).
                 build();
         return new ResponseEntity<>(this.shoppingCartService.newShoppingCart(newShoppingCart), HttpStatus.CREATED);
+
     }
 
     @Operation(summary = "Delete Shopping Cart", description = "Delete the Shopping Cart including its Shopping Cart Items", tags = "Shopping Cart")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Shopping Cart Deleted"),
             @ApiResponse(responseCode = "404", description = "Shopping Cart Not Found for Deletion",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+            @ApiResponse(responseCode = "400", description = "Bad Request for Shopping Cart Deletion",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))

@@ -1,5 +1,6 @@
 package com.ranmal.shoppingcart.controller;
 
+import com.ranmal.shoppingcart.dto.CartItemsResponse;
 import com.ranmal.shoppingcart.dto.ShoppingCartItemCreateDTO;
 import com.ranmal.shoppingcart.exception.ApiExceptionResponse;
 import com.ranmal.shoppingcart.exception.NotFoundException;
@@ -18,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -60,6 +63,11 @@ public class ShoppingCartItemController {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
+            @ApiResponse(responseCode = "400", description = "Bad Request for Shopping Cart Item Deletion",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
     })
     @DeleteMapping(path = "/shopping-carts/{cartId}/products/{productId}")
     public ShoppingCartItemKeys deleteCartItem(@PathVariable("cartId") int cartId, @PathVariable("productId") int productId) {
@@ -69,6 +77,26 @@ public class ShoppingCartItemController {
         } catch (EmptyResultDataAccessException ex) {
             throw new NotFoundException("No resource found for Shopping Cart Item Entity with Cart Id : " + cartId + " and Product Id : " + productId);
         }
+    }
+
+    @Operation(summary = "Details of Shopping Cart Items",
+            description = "Get Details of Shopping Cart Items inside a Shopping Cart by sending Cart Id", tags = "Shopping Cart")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Shopping Cart Item Details Found"),
+            @ApiResponse(responseCode = "404", description = "Shopping Cart Items Not Found",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+            @ApiResponse(responseCode = "400", description = "Bad Request for getting Shopping Cart Items Details",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+    })
+    @GetMapping(path="/shopping-carts/{cartId}")
+    public List<CartItemsResponse> getCartItemDetails(@PathVariable("cartId") int cartId){
+        return this.shoppingCartItemService.shoppingCartItemDetails(cartId);
     }
 
 }

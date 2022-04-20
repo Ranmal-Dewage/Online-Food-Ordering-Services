@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -37,11 +38,6 @@ public class ProductController {
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = Product.class))
-                    }),
-            @ApiResponse(responseCode = "404", description = "Products Not Found",
-                    content = {
-                            @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ApiExceptionResponse.class))
                     }),
     })
     @GetMapping
@@ -116,4 +112,24 @@ public class ProductController {
                 ).build();
         return new ResponseEntity<>(this.productService.createProducts(newProduct), HttpStatus.CREATED);
     }
+
+    @Operation(summary = "Get Product by ID", description = "Return a Product that is matching for the given Product ID", tags = "Products")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the Product"),
+            @ApiResponse(responseCode = "400", description = "Bad Request for Product ID",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+            @ApiResponse(responseCode = "404", description = "Product Not Found",
+                    content = {
+                            @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiExceptionResponse.class))
+                    }),
+    })
+    @GetMapping(path = "{productId}")
+    public Optional<Product> getProductsById(@PathVariable(name = "productId") int productId) {
+        return this.productService.findProductsById(productId);
+    }
+
 }

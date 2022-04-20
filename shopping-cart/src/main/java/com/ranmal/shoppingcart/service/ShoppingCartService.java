@@ -21,7 +21,7 @@ public class ShoppingCartService {
     }
 
     public ShoppingCart newShoppingCart(ShoppingCart shoppingCart) {
-        // TODO : Check if passed User Id exists
+        // TODO : Check if passed User ID exists
         return this.shoppingCartRepository.saveAndFlush(shoppingCart);
     }
 

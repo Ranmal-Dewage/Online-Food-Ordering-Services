@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -19,12 +20,7 @@ public class ProductService {
     }
 
     public List<Product> findAllProducts() {
-        List<Product> availableProducts = this.productRepository.findAll();
-        if (availableProducts.size() == 0) {
-            throw new NotFoundException("No Products Available in the System");
-        } else {
-            return availableProducts;
-        }
+        return this.productRepository.findAll();
     }
 
     public Product createProducts(Product product) {
@@ -54,6 +50,15 @@ public class ProductService {
             throw new NotFoundException("No Products Found for the Category : " + category);
         } else {
             return retrievedProducts;
+        }
+    }
+
+    public Optional<Product> findProductsById(int productId) {
+        Optional<Product> product = this.productRepository.findById(productId);
+        if (product.isEmpty()) {
+            throw new NotFoundException("Product Not Found for Product Id : " + productId);
+        } else {
+            return product;
         }
     }
 }

@@ -35,7 +35,7 @@ public class UserController {
     @Operation(summary = "Create Users", description = "Create a User and return the created basic user details with ID", tags = "Users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User Created"),
-            @ApiResponse(responseCode = "409", description = "User Already Exists",
+            @ApiResponse(responseCode = "400", description = "User Already Exists",
                     content = {
                             @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ApiExceptionResponse.class))
@@ -62,11 +62,6 @@ public class UserController {
     @Operation(summary = "Authenticate Users", description = "Authenticate the User and return basic user details with ID", tags = "Users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User Authenticated"),
-            @ApiResponse(responseCode = "404", description = "User Not Found",
-                    content = {
-                            @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ApiExceptionResponse.class))
-                    }),
             @ApiResponse(responseCode = "401", description = "User Not Authorized",
                     content = {
                             @Content(mediaType = "application/json",
